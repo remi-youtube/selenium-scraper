@@ -1,9 +1,13 @@
-name: Run Selenium Levels
+name: Run Scrapers
 
 on:
   push:
     branches: [ main ]
   pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   test-levels:
@@ -26,17 +30,49 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Level 1 scraper
+      - name: Run scrapers
+        id: run
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: python level1.py
+        run: |
+          set +e
+          python level1.py && python level2.py && python level3.py > run.log 2>&1
+          echo "exit_code=$?" >> $GITHUB_ENV
+          {
+            echo "log<<EOF"
+            cat run.log
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+        continue-on-error: true
 
-      - name: Run Level 2 scraper
-        env:
-          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: python level2.py
+      # Only run Codex if something failed above
+      - name: Auto-fix selectors with Codex
+        if: ${{ env.exit_code != '0' }}
+        uses: openai/codex-action@main
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          prompt: >-
+            You are Codex. The following is the complete output from a failing Python scraper run.
+            It includes the traceback, file name, and HTML snippet printed by the script.
+            Identify which CSS selectors need updating and fix them directly in the code.
+            Keep the diff minimal.
 
-      - name: Run Level 3 scraper
-        env:
-          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: python level3.py
+            ```
+            ${{ steps.run.outputs.log }}
+            ```
+          codex_args: '["--config","sandbox_mode=\"workspace-write\""]'
+
+      # Open a PR with Codex edits
+      - name: Create pull request with fixes
+        if: ${{ env.exit_code != '0' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "fix(scraper): auto-fix selectors via Codex after CI failure"
+          branch: codex/auto-fix-${{ github.run_id }}
+          title: "Auto-fix selectors"
+          body: |
+            Selenium run failed with error:
+            ```
+            ${{ steps.run.outputs.log }}
+            ```
+            Codex applied a minimal selector fix using the failing log excerpt.
