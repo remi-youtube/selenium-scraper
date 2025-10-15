@@ -21,6 +21,9 @@ try:
 
     print("Price:", price)
     if not price:
+        print("\n--- PAGE HTML START ---\n")
+        print(driver.page_source)
+        print("\n--- PAGE HTML END ---\n")
         raise ValidationError(os.path.basename(__file__), ["price"])
 
 finally:

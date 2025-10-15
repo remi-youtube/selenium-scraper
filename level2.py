@@ -175,5 +175,11 @@ if __name__ == "__main__":
         from dataclasses import asdict
         print(json.dumps(asdict(data), indent=2, ensure_ascii=False))
 
+    except Exception as e:
+        print("\n--- PAGE HTML START ---\n")
+        print(driver.page_source)
+        print("\n--- PAGE HTML END ---\n")
+        raise
+
     finally:
         driver.quit()
