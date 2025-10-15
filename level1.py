@@ -1,8 +1,10 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from validation import ValidationError
 
 url = "https://www.bcracingeu.com/bc-6kg-taper-spring-95-62-180-006v-0033777.html"
 
@@ -18,6 +20,8 @@ try:
         price = elements[0].text.strip()
 
     print("Price:", price)
+    if not price:
+        raise ValidationError(os.path.basename(__file__), ["price"])
 
 finally:
     driver.quit()

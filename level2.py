@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from typing import Optional, Dict, List
 import json, sys
 
@@ -10,6 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from validation import validate_dataclass
+
 
 @dataclass
 class ProductData:
@@ -20,8 +22,8 @@ class ProductData:
     sku: Optional[str] = None
     availability: Optional[str] = None
     description: Optional[str] = None
-    images: List[str] = []
-    extras: Dict[str, str] = {}
+    images: List[str] = field(default_factory=list)
+    extras: Dict[str, str] = field(default_factory=dict)
 
 
 class ProductPage:
@@ -165,5 +167,13 @@ if __name__ == "__main__":
         page.load(url)
         data = page.scrape(url)
         print(json.dumps(asdict(data), indent=2, ensure_ascii=False))
+
+        # validate data
+        validate_dataclass(data, required=["price", "sku", "availability"], file_path=__file__)
+
+        # If valid, print the JSON for downstream steps
+        from dataclasses import asdict
+        print(json.dumps(asdict(data), indent=2, ensure_ascii=False))
+
     finally:
         driver.quit()
