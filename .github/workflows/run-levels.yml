@@ -1,4 +1,4 @@
-name: Run Selenium Levels
+name: Run Scrapers
 
 on:
   push:
