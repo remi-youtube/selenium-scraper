@@ -36,7 +36,7 @@ jobs:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
         run: |
           set +e
-          python level1.py && python level2.py && python level3.py > run.log 2>&1
+          ( python level1.py; python level2.py; python level3.py ) > run.log 2>&1
           echo "exit_code=$?" >> $GITHUB_ENV
           {
             echo "log<<EOF"
