@@ -55,11 +55,18 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "fix(ci): auto-fix failing tests via Codex"
-          branch: codex/auto-fix-${{ github.event.workflow_run.run_id }}
+          branch: codex/auto-fix-${{ github.run_number }}-${{ github.run_attempt }}
           base: ${{ env.FAILED_HEAD_BRANCH }}
-          title: "Auto-fix failing CI via Codex"
+          title: "Auto-heal scraper failure (Run ${{ github.run_number }})"
           body: |
-            Codex automatically generated this PR in response to a CI failure on workflow `${{ env.FAILED_WORKFLOW_NAME }}`.
-            Failed run: ${{ env.FAILED_RUN_URL }}
-            Head branch: `${{ env.FAILED_HEAD_BRANCH }}`
-            This PR contains minimal changes intended solely to make the CI pass.
+            🚨 The scrapers broke but Codex stepped in.
+
+            This pull request was automatically opened after the **${{ env.FAILED_WORKFLOW_NAME }}** workflow failed.
+            Codex analyzed the error logs, patched the selectors, and re-ran the tests until everything passed.
+
+            🔗 Failed run: ${{ env.FAILED_RUN_URL }}
+            🌱 Branch: `${{ env.FAILED_HEAD_BRANCH }}`
+
+            The goal here isn’t a full refactor — just a small, surgical fix to get the build green again.
+            Basically, the scraper healed itself. 😉
+
