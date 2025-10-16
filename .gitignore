@@ -5,4 +5,3 @@ __pycache__
 *.pyd
 .venv
 artifacts
-ci_artifacts
