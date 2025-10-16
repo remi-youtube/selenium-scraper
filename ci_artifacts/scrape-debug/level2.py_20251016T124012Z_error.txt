@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/runner/work/selenium-scraper/selenium-scraper/level2.py", line 172, in <module>
+    validate_dataclass(data, required=["price", "sku", "availability"], file_path=__file__)
+  File "/home/runner/work/selenium-scraper/selenium-scraper/validation.py", line 41, in validate_dataclass
+    raise ValidationError(file_name, missing_fields=missing)
+validation.ValidationError: [level2.py] Missing required field(s): availability

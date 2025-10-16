@@ -83,7 +83,7 @@ class ProductPage:
 
     def get_availability(self) -> Optional[str]:
         # human-readable first
-        for sel in ['div.stock.available span', 'div.stock.unavailable span']:
+        for sel in ['div.c-green.stock-display', 'div.stock.available span', 'div.stock.unavailable span']:
             els = self.driver.find_elements(By.CSS_SELECTOR, sel)
             if els and els[0].text.strip():
                 return els[0].text.strip()
