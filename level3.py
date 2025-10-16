@@ -1,3 +1,5 @@
+# NOTE: The product URL returns a 404 (see ci_artifacts/scrape-debug/level3.py_20251016T180854Z_page.html),
+# so no price selector will match until the page is restored.
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
