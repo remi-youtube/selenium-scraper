@@ -1,3 +1,7 @@
+"""
+As of 2025-10-16 the target product URL returns a 404 Not Found page,
+so there is no price element to target for scraping.
+"""
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
