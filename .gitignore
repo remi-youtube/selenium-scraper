@@ -4,4 +4,4 @@ __pycache__
 *.pyo
 *.pyd
 .venv
-ci_artifacts
+artifacts
