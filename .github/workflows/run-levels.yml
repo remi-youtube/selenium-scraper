@@ -26,11 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Level 1 scraper
-        env:
-          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: python level1.py
-
       - name: Run Level 2 scraper
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
