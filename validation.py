@@ -1,5 +1,8 @@
 from dataclasses import is_dataclass, fields
-import os
+import os, traceback, datetime
+
+ART_DIR = os.path.join(os.path.dirname(__file__), "artifacts")
+os.makedirs(ART_DIR, exist_ok=True)
 
 class ValidationError(Exception):
     def __init__(self, file_name, missing_fields=None, reason=None):
@@ -36,3 +39,15 @@ def validate_dataclass(obj, required, file_path):
     missing = [name for name in required if _is_empty(values.get(name))]
     if missing:
         raise ValidationError(file_name, missing_fields=missing)
+
+def dump_debug(level_name, driver, err):
+    ts = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    base = os.path.join(ART_DIR, level_name)
+    try:
+        html = driver.page_source if driver else ""
+    except Exception:
+        html = ""
+    with open(f"{base}_{ts}_page.html", "w", encoding="utf-8") as f:
+        f.write(html)
+    with open(f"{base}_{ts}_error.txt", "w", encoding="utf-8") as f:
+        f.write("".join(traceback.format_exception(type(err), err, err.__traceback__)))

@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from validation import ValidationError
+from validation import ValidationError, dump_debug
 
 url = "https://www.bcracingeu.com/bc-6kg-taper-spring-95-62-180-006v-0033777.html"
 
@@ -21,10 +21,10 @@ try:
 
     print("Price:", price)
     if not price:
-        print("\n--- PAGE HTML START ---\n")
-        print(driver.page_source)
-        print("\n--- PAGE HTML END ---\n")
         raise ValidationError(os.path.basename(__file__), ["price"])
 
+except Exception as e:
+    dump_debug(os.path.basename(__file__), driver, e)
+    raise
 finally:
     driver.quit()

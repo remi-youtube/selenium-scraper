@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict, field
 from typing import Optional, Dict, List
-import json, sys
+import os, json, sys
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from validation import validate_dataclass
+from validation import dump_debug, validate_dataclass
 
 
 @dataclass
@@ -171,14 +171,8 @@ if __name__ == "__main__":
         # validate data
         validate_dataclass(data, required=["price", "sku", "availability"], file_path=__file__)
 
-        # If valid, print the JSON for downstream steps
-        from dataclasses import asdict
-        print(json.dumps(asdict(data), indent=2, ensure_ascii=False))
-
     except Exception as e:
-        print("\n--- PAGE HTML START ---\n")
-        print(driver.page_source)
-        print("\n--- PAGE HTML END ---\n")
+        dump_debug(os.path.basename(__file__), driver, e)
         raise
 
     finally:

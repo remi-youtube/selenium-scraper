@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: read
 
 jobs:
   auto-fix:
@@ -37,17 +38,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Download artifacts from failed run
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          repo: ${{ github.repository }}
+          path: ci_artifacts
       - name: Run Codex
         uses: openai/codex-action@main
         id: codex
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt: >-
-            You are working in a python repo with Selenium scraper files and GitHub Actions. Read the repository,
-            run the level*.py files, fix the failing CSS (if any). Only identify the minimal change needed to make
-            all tests pass, implement only that change, and stop. Do not refactor unrelated code or files.
-            Keep changes small and surgical.
-            Failing scrapers will print the HTML of the page they are scraping to help you identify the correct selectors.
+            You are editing a Python Selenium scraper repo.
+            Do not install packages. Do not launch browsers. Do not run code.
+            Use only the files in this workspace and the debug inputs under ./ci_artifacts.
+            Goal: patch the minimal CSS/XPath selectors in level*.py to fix the failure indicated by:
+            - ./ci_artifacts/**/level*_*.html (raw page HTML)
+            - ./ci_artifacts/**/level*_*.txt (traceback)
+
+            Acceptance criteria:
+            - The updated selectors in level*.py would match at least one node in the provided HTML files.
+            - Keep changes surgical. No refactors. No file renames. No logic changes beyond selector strings and By.* usage.
+            - If the page being scraped is no longer available (40X or 50X), add a comment to the top of the file indicating that and explain why.
           codex-args: '["--config","sandbox_mode=\"workspace-write\""]'
 
       - name: Create pull request with fixes
