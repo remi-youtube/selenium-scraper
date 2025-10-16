@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/runner/work/selenium-scraper/selenium-scraper/level1.py", line 24, in <module>
+    raise ValidationError(os.path.basename(__file__), ["price"])
+validation.ValidationError: [level1.py] Missing required field(s): price
