@@ -14,7 +14,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 try:
     driver.get(url)
-    elements = driver.find_elements(By.CSS_SELECTOR, "span[data-price-type='finalPrice'] .price")
+    elements = driver.find_elements(By.CSS_SELECTOR, "span[data-price-type='finalPrice'] .finalprice")
     price = None
     if elements and elements[0].text.strip():
         price = elements[0].text.strip()
