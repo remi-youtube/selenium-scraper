@@ -1,3 +1,5 @@
+# The product URL now responds with a 404 (see ci_artifacts/scrape-debug/level3.py_*_page.html),
+# so price scraping cannot succeed until the source page is restored.
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
