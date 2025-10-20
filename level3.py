@@ -1,3 +1,4 @@
+# NOTE: Product URL responds with 404 (see ./ci_artifacts/scrape-debug/level3.py_20251020T014319Z_page.html), so price selectors cannot be validated.
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
